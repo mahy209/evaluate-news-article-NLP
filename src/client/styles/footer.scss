@@ -8,7 +8,9 @@ footer {
   padding: 5rem 0;
 }
 .footer__social {
-  position: fixed;
+  position: relative;
+  width: 100%;
+  vertical-align: top;
   margin-bottom: 20px;
   text-align: center;
   .social__item {
@@ -16,9 +18,8 @@ footer {
     display: inline-block;
     font-size: 18px;
     text-align: center;
-    margin-right: 10px;
     &:hover {
-      color: #f8c803;
+      color: black;
     }
   }
 }

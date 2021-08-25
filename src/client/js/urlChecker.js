@@ -1,14 +1,10 @@
-// found solution here https://stackoverflow.com/a/5717133/6483379
-export function checkForUrl(str) {
-  const pattern = new RegExp(
-    '^(https?:\\/\\/)?' + // protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-      '(\\#[-a-z\\d_]*)?$',
-    'i'
-  ) // fragment locator
-  return !!pattern.test(str)
-}
+//found the solution here https://gist.github.com/franciskim/41a959f8e3989254ef5d
+function checkForUrl(value)
+{
+    var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi
+    var regexp = new RegExp(expression);
+    return regexp.test(value);
+} 
+
+export { checkForUrl }
 

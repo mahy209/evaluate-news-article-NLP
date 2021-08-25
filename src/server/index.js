@@ -1,62 +1,66 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
+var path = require('path')
 const express = require('express')
 const bodyParser = require('body-parser')
-const axios = require('axios')
-const cors = require('cors')
-
+const fetch = require('node-fetch');
 const mockAPIResponse = require('./mockAPI.js')
 
-const MEAN_CLOUD_API_URL = 'https://api.meaningcloud.com/sentiment-2.1'
-const MEAN_CLOUD_API_KEY = process.env.MEAN_CLOUD_API_KEY
+const PORT = 8081
 
-// Create an instance for the server
+// Start up an instance of app
 const app = express()
-// handle cors to avoid cors-origin issue
-app.use(cors())
-// Configuring express to use body-parser as middle-ware.
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
-// Configuring express static directory
-app.use(express.static('dist'))
-// handle base route
-app.get('/', function (req, res) {
-  res.sendFile('dist/index.html')
-  //res.sendFile(path.resolve('src/client/views/index.html'))
-})
 
-app.post('/add-url', async (req, res) => {
-  const { articleUrl } = req.body
-  const meaningCloudUrl = `${MEAN_CLOUD_API_URL}?key=${MEAN_CLOUD_API_KEY}&url=${articleUrl}&lang=en`
-  try {
-    const {
-      data: { sentence_list, score_tag, agreement, subjectivity, confidence, irony },
-    } = await axios(meaningCloudUrl)
-    res.send({
-      text: sentence_list[0].text || '',
-      score_tag: score_tag,
-      agreement: agreement,
-      subjectivity: subjectivity,
-      confidence: confidence,
-      irony: irony,
-    })
-  } catch (error) {
-    console.log(error.message)
-  }
+// Cors allows the browser and server to communicate without any security interruptions
+const cors = require('cors');
+
+app.use(cors());
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.json());
+app.use(express.static('dist'))
+
+console.log(__dirname)
+
+// API
+const baseURL = 'https://api.meaningcloud.com/sentiment-2.1?'
+const apiKey = process.env.API_KEY
+console.log(`Your API Key is ${process.env.API_KEY}`);
+let userInput = [] // const does not work
+
+app.get('/', function (req, res) {
+    //res.sendFile('dist/index.html')
+    res.sendFile(path.resolve('src/client/views/index.html'))
 })
 
 app.get('/test', function (req, res) {
-  res.send(mockAPIResponse)
+    res.send(mockAPIResponse)
+})
+
+// POST Route
+app.post('/api', async function(req, res) {
+    userInput = req.body.url;
+    console.log(`You entered: ${userInput}`);
+    const apiURL = `${baseURL}key=${apiKey}&url=${userInput}&lang=en`
+
+    const response = await fetch(apiURL)
+    const mcData = await response.json()
+    console.log(mcData)
+    res.send(mcData)
+     const projectData = {
+     score_tag : mcData.score_tag,
+     agreement : mcData.agreement,
+     subjectivity : mcData.subjectivity,
+     confidence : mcData.confidence,
+     irony : mcData.irony
+    }
+    res.send(projectData);
+     
 })
 
 // designates what port the app will listen to for incoming requests
-app.listen(8081, (error) => {
-  if (error) throw new Error(error)
-  console.log('Server listening on port 8081!')
+app.listen(PORT, (error) => {
+    if (error) throw new Error(error)
+    console.log(`Server listening on port ${PORT}!`)
 })
-
-module.exports = {
-  app,
-}
