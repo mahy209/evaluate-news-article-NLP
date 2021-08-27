@@ -6,5 +6,11 @@ import './styles/form.scss'
 import './styles/header.scss'
 
 import { handleSubmit } from './js/formHandler'
+import { checkForUrl } from './js/urlChecker'
 
-export { handleSubmit } 
+alert (" I EXIST ")
+
+export { 
+    handleSubmit,
+    checkForUrl
+} 
