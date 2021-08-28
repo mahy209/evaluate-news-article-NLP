@@ -8,7 +8,7 @@ import './styles/header.scss'
 import { handleSubmit } from './js/formHandler'
 import { checkForUrl } from './js/urlChecker'
 
-alert (" I EXIST ")
+alert (" HELLO THERE! ")
 
 export { 
     handleSubmit,

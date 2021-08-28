@@ -15,6 +15,11 @@ This project aims to build a web tool that allows users to run Natural Language 
 * meaningcloud API
 * Jest
 
+
+## Requirements
+* webpack 4.44.2
+* webpack-cli 3.3.12
+
 ## Steps
 1. Clone the repo
 
