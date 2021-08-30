@@ -1,48 +1,38 @@
 import { checkForUrl } from './urlChecker'
 
-async function handleSubmit(event) {
-  event.preventDefault()
-
-  // check what text was put into the form field
-  let formText = document.getElementById('url').value
-
-  if(checkForUrl(formText)) {
-  console.log("::: Form Submitted :::")
-
-  postData('http://localhost:8081/api', {url: formText})
-
-  
-  .then(function(res) {
-      // form updated
-      document.getElementById("text").innerHTML = `Text: ${apiRes.sentence_list[0].text.toLowerCase()}`;
-      document.getElementById("agreement").innerHTML = `Agreement: ${apiRes.agreement.toLowerCase()}`;
-      document.getElementById("subjectivity").innerHTML = `Subjectivity: ${apiRes.subjectivity.toLowerCase()}`;
-      document.getElementById("confidence").innerHTML = `Confidence: ${apiRes.confidence}`;
-      document.getElementById("irony").innerHTML = `Irony: ${apiRes.irony.toLowerCase()}`;
+const postData = async (url = '', data = {}) => {
+  const response = await fetch(url, {
+    method: 'POST',
+    credentials: 'same-origin',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
   })
- } else {
-      alert('It seems like an invalid URL');
+  try {
+    return await response.json()
+  } catch (error) {
+    console.log(error)
   }
 }
 
-const postData = async (url = "", data = {}) => {
-  console.log('Analyzing:', data);
-  const response = await fetch(url, {
-      method: 'POST',
-      credentials: 'same-origin',
-      mode: 'cors',
-      headers: {
-      'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data)
-  });
-  try {
-      const newData = await response.json();
-      console.log('Data received:', newData)
-      return newData;
-  } catch (error) {
-      console.log('error', error);
+const handleSubmit = async () => {
+  const getUrl = document.getElementById('article-url').value
+  if (checkForUrl(getUrl)) {
+    postData('http://localhost:8081/new-url', {
+      getUrl
+    }).then((apiData) => {
+      document.getElementById('text').innerHTML = `SubjectText: ${apiData.text}`
+      document.getElementById('agreement').innerHTML = `Agreement: ${apiData.agreement}`
+      document.getElementById('confidence').innerHTML = `Confidence: ${apiData.confidence}`
+      document.getElementById('subjectivity').innerHTML = `Subjectivity: ${apiData.subjectivity}`
+      document.getElementById('irony').innerHTML = `Irony: ${apiData.irony}`
+    })
+  } else {
+    alert(' ITS INVALID URL')
   }
-};
+}
 
-export { handleSubmit }
+
+export { handleSubmit };

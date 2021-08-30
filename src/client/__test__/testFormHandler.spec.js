@@ -1,6 +1,6 @@
 import "babel-polyfill";
 
-import { handleSubmit } from "../src/client/js/formHandler"
+import { handleSubmit } from "../js/formHandler";
 
 describe("Testing the submit functionality", () => {
   test("Testing the handleSubmit() function", () => {

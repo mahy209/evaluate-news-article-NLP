@@ -19,18 +19,17 @@ app.use(cors());
 // body parser
 const bodyParser = require('body-parser')
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 // static dist
 app.use(express.static('dist'))
 
-console.log(__dirname)
+const axios = require('axios')
 
 // API
-const baseURL = 'https://api.meaningcloud.com/sentiment-2.1?'
-const apiKey = process.env.API_KEY
-console.log(`Your API Key is ${process.env.API_KEY}`);
-let userInput = [] // const does not work
+const API_URL = 'https://api.meaningcloud.com/sentiment-2.1'
+const API_KEY = process.env.API_KEY
 
 app.get('/', function (req, res) {
     //res.sendFile('dist/index.html')
@@ -42,28 +41,30 @@ app.get('/test', function (req, res) {
 })
 
 // POST Route
-app.post('/api', async function(req, res) {
-    userInput = req.body.url;
-    console.log(`You entered: ${userInput}`);
-    const apiURL = `${baseURL}key=${apiKey}&url=${userInput}&lang=en`
-
-    const response = await fetch(apiURL)
-    const mcData = await response.json()
-    res.send(mcData)
-     const projectData = {
-     score_tag : mcData.score_tag,
-     agreement : mcData.agreement,
-     subjectivity : mcData.subjectivity,
-     confidence : mcData.confidence,
-     irony : mcData.irony
+app.get('/new-url', async (req, res) => {
+    const { getUrl } = req.body
+    const meaningCloudUrl = `${API_URL}?key=${process.env.API_KEY}&url=${getUrl}&lang=en`
+    try {
+      const {
+        apiData: { sentence_list, agreement, subjectivity, confidence, irony },
+      } = await axios(meaningCloudUrl)
+      res.send({
+        confidence: confidence,
+        irony: irony,
+        agreement: agreement,
+        subjectivity: subjectivity,
+        text: sentence_list[0].text || '',
+      })
+    } catch (error) {
+      console.log(error.message)
     }
-    console.log(mcData)
-    res.send(projectData);
-     
-})
+  })
 
-// port 
-app.listen(PORT, (error) => {
-    if (error) throw new Error(error)
-    console.log(`Server listening on port ${PORT}!`)
-})
+// Port listening to the requests
+app.listen(PORT, function () {
+    console.log(`Server is running on port ${PORT}!`);
+  });
+
+module.exports = {
+    app,
+  }
