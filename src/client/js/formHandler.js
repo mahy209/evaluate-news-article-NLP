@@ -21,11 +21,11 @@ const handleSubmit = async () => {
   const getUrl = document.getElementById('article-url').value
 
 
-  if (Client.checkForUrl(getUrl)) {
+  if (checkForUrl(getUrl)) {
     console.log("Form Successfully Submitted")
     postData(`http://localhost:8081/${getUrl}`, {
       getUrl
-    }).then(function(apiData) {
+    }).then((apiData) => {
       document.getElementById('text').innerHTML = `SubjectText: ${apiData.text}`
       document.getElementById('agreement').innerHTML = `Agreement: ${apiData.agreement}`
       document.getElementById('confidence').innerHTML = `Confidence: ${apiData.confidence}`
