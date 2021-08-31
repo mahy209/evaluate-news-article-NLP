@@ -30,34 +30,35 @@ const axios = require('axios')
 // API
 const API_URL = 'https://api.meaningcloud.com/sentiment-2.1'
 const API_KEY = process.env.API_KEY
+var getUrl = [];
 
 app.get('/', function (req, res) {
-    //res.sendFile('dist/index.html')
-    res.sendFile(path.resolve('src/client/views/index.html'))
-})
-
-app.get('/test', function (req, res) {
-    res.send(mockAPIResponse)
+    res.sendFile('dist/index.html')
+    //res.sendFile(path.resolve('src/client/views/index.html'))
 })
 
 // POST Route
-app.get('/new-url', async (req, res) => {
-    const { getUrl } = req.body
+app.get('/', async (req, res) => {
+    getUrl  = req.body
     const meaningCloudUrl = `${API_URL}?key=${process.env.API_KEY}&url=${getUrl}&lang=en`
     try {
       const {
         apiData: { sentence_list, agreement, subjectivity, confidence, irony },
       } = await axios(meaningCloudUrl)
       res.send({
-        confidence: confidence,
-        irony: irony,
+        text: sentence_list[0].text || '',
         agreement: agreement,
         subjectivity: subjectivity,
-        text: sentence_list[0].text || '',
+        confidence: confidence,
+        irony: irony,
       })
     } catch (error) {
       console.log(error.message)
     }
+  })
+
+  app.get('/test', function (req, res) {
+      res.send(mockAPIResponse)
   })
 
 // Port listening to the requests

@@ -1,6 +1,6 @@
 import { checkForUrl } from './urlChecker'
 
-const postData = async (url = '', data = {}) => {
+const postData = async (url = '', apiData = {}) => {
   const response = await fetch(url, {
     method: 'POST',
     credentials: 'same-origin',
@@ -8,7 +8,7 @@ const postData = async (url = '', data = {}) => {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(apiData),
   })
   try {
     return await response.json()
@@ -19,10 +19,13 @@ const postData = async (url = '', data = {}) => {
 
 const handleSubmit = async () => {
   const getUrl = document.getElementById('article-url').value
-  if (checkForUrl(getUrl)) {
-    postData('http://localhost:8081/new-url', {
+
+
+  if (Client.checkForUrl(getUrl)) {
+    console.log("Form Successfully Submitted")
+    postData(`http://localhost:8081/${getUrl}`, {
       getUrl
-    }).then((apiData) => {
+    }).then(function(apiData) {
       document.getElementById('text').innerHTML = `SubjectText: ${apiData.text}`
       document.getElementById('agreement').innerHTML = `Agreement: ${apiData.agreement}`
       document.getElementById('confidence').innerHTML = `Confidence: ${apiData.confidence}`
