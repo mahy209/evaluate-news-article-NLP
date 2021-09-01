@@ -23,7 +23,7 @@ const handleSubmit = async () => {
 
   if (checkForUrl(getUrl)) {
     console.log("Form Successfully Submitted")
-    postData(`http://localhost:8081/${getUrl}`, {
+    postData(`http://localhost:8081/`, {
       getUrl
     }).then((apiData) => {
       document.getElementById('text').innerHTML = `SubjectText: ${apiData.text}`

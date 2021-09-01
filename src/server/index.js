@@ -41,7 +41,7 @@ app.post('/', async (req, res) => {
     const meaningCloudUrl = `https://api.meaningcloud.com/sentiment-2.1?key=${process.env.API_KEY}&url=${getUrl}&lang=en`
     try {
       const {
-        apiData: { sentence_list, agreement, subjectivity, confidence, irony },
+        data: { sentence_list, agreement, subjectivity, confidence, irony },
       } = await axios(meaningCloudUrl)
       res.send({
         text: sentence_list[0].text || '',
